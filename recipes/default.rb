@@ -11,10 +11,6 @@ bash "Set HTTP_PROXY " do
   echo 'Defaults env_keep = "http_proxy https_proxy ftp_proxy"' >> /etc/sudoers
   echo "Acquire::http::Proxy \"#{Chef::Config[:http_proxy]}\";" > /etc/apt/apt.conf.d/30proxy
 
-  
-  environment { 'http_proxy' => Chef::Config[:http_proxy] }
-
-
   EOH
   creates "/etc/bash.bashrc.http_proxy"
 end
