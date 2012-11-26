@@ -12,7 +12,7 @@ bash "Set HTTP_PROXY " do
   echo "Acquire::http::Proxy \"#{Chef::Config[:http_proxy]}\";" > /etc/apt/apt.conf.d/30proxy
 
   
-  environment { 'http_proxy' => Chef::Config[:http_proxy] }
+  environment { 'http_proxy' => Chef::Config[:http_proxy] }
 
 
   EOH
