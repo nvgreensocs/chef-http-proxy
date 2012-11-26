@@ -15,4 +15,10 @@ bash "Set HTTP_PROXY " do
   creates "/etc/bash.bashrc.http_proxy"
 end
 
+bash "Set HTTP_PROXY " do
+  code <<-EOH
+  echo "Acquire::http::Proxy '#{Chef::Config[:http_proxy]}';" > /etc/apt/apt.conf.d/30proxy
+  EOH
+  creates "/etc/apt/apt.conf.d/30proxy"
+end
 
