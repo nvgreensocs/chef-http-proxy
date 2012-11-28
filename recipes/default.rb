@@ -24,5 +24,5 @@ base "Set sudoers and bashrc"
     echo 'Defaults env_keep = "http_proxy https_proxy ftp_proxy"' >> /etc/sudoers
     touch /etc/http_proxy_setup
   EOH
-  creates /etc/http_proxy_setup
+  creates "/etc/http_proxy_setup"
 end
