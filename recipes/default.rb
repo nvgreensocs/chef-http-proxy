@@ -15,8 +15,8 @@ end
 # We will always run these, just in case the user changes their proxy, it's not exactly long to do.
 bash "Set HTTP_PROXY " do
   code <<-EOH
-  echo "export http_proxy=\'#{Chef::Config[:http_proxy]}\'" > /etc/bash.bashrc.http_proxy
-  echo "Acquire::http::Proxy \'#{Chef::Config[:http_proxy]}\';" > /etc/apt/apt.conf.d/30proxy
+  echo "export http_proxy=\"#{Chef::Config[:http_proxy]}\"" > /etc/bash.bashrc.http_proxy
+  echo "Acquire::http::Proxy \"#{Chef::Config[:http_proxy]}\";" > /etc/apt/apt.conf.d/30proxy
   EOH
 end
 
