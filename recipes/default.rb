@@ -1,24 +1,28 @@
 
+ruby_block "HTTP Proxy Report" do
+  block do
+     if Chef::Config[:http_proxy]
+       Chef::Log.info("Your HTTY Proxy seems to be working, and is set to "+Chef::Config[:http_proxy])
+    else
+       Chef::Log.info("You seem to have a good connection to the internet with no proxy")
+    end
+  end
+end
 
+# We will always run these, just in case the user changes their proxy, it's not exactly long to do.
 bash "Set HTTP_PROXY " do
-  cwd Chef::Config[:file_cache_path]
   code <<-EOH
-
-
-  cd /vagrant/
   echo "export http_proxy=\'#{Chef::Config[:http_proxy]}\'" > /etc/bash.bashrc.http_proxy
-  echo "source /etc/bash.bashrc.http_proxy" >> /etc/bash.bashrc
-  echo 'Defaults env_keep = "http_proxy https_proxy ftp_proxy"' >> /etc/sudoers
-  echo "Acquire::http::Proxy \"#{Chef::Config[:http_proxy]}\";" > /etc/apt/apt.conf.d/30proxy
-
+  echo "Acquire::http::Proxy \'#{Chef::Config[:http_proxy]}\';" > /etc/apt/apt.conf.d/30proxy
   EOH
-  creates "/etc/bash.bashrc.http_proxy"
 end
 
-bash "Set HTTP_PROXY " do
+#only do this once.
+base "Set sudoers and bashrc"
   code <<-EOH
-  echo "Acquire::http::Proxy '#{Chef::Config[:http_proxy]}';" > /etc/apt/apt.conf.d/30proxy
+    echo "source /etc/bash.bashrc.http_proxy" >> /etc/bash.bashrc
+    echo 'Defaults env_keep = "http_proxy https_proxy ftp_proxy"' >> /etc/sudoers
+    touch /etc/http_proxy_setup
   EOH
-  creates "/etc/apt/apt.conf.d/30proxy"
+  creates /etc/http_proxy_setup
 end
-
