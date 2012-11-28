@@ -1,4 +1,7 @@
 
+
+ENV['http_proxy'] = Chef::Config[:http_proxy]
+
 ruby_block "HTTP Proxy Report" do
   block do
      if Chef::Config[:http_proxy]
