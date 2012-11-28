@@ -18,7 +18,7 @@ bash "Set HTTP_PROXY " do
 end
 
 #only do this once.
-base "Set sudoers and bashrc"
+base "Set sudoers and bashrc" do
   code <<-EOH
     echo "source /etc/bash.bashrc.http_proxy" >> /etc/bash.bashrc
     echo 'Defaults env_keep = "http_proxy https_proxy ftp_proxy"' >> /etc/sudoers
