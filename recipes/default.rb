@@ -36,24 +36,24 @@ end
 
 bash "Add LC_LANG" do
     code <<-EOH
-       grep -v 'export LANG="en"' /home/vagrant/.profile > /tmp/tmp.profile.$$
+       grep -v 'export LANG="en"' /etc/profile > /tmp/tmp.profile.$$
        echo 'export LANG="en"' >> /tmp/tmp.profile.$$
-       mv -f /tmp/tmp.profile.$$ /home/vagrant/.profile
+       mv -f /tmp/tmp.profile.$$ /etc/profile
   EOH
 end
 bash "Add LC_MESSAGE" do
     code <<-EOH
-       grep -v 'export LC_MESSAGES="C"' /home/vagrant/.profile > /tmp/tmp.profile.$$
+       grep -v 'export LC_MESSAGES="C"' /etc/profile > /tmp/tmp.profile.$$
        echo 'export LC_MESSAGES="C"' >> /tmp/tmp.profile.$$
-       mv -f /tmp/tmp.profile.$$ /home/vagrant/.profile
+       mv -f /tmp/tmp.profile.$$ /etc/profile
   EOH
 end
 
 bash "Add http proxy to profile" do
     code <<-EOH
-       grep -v "source /etc/bash.bashrc.http_proxy" /home/vagrant/.profile > /tmp/tmp.profile.$$
+       grep -v "source /etc/bash.bashrc.http_proxy" /etc/profile > /tmp/tmp.profile.$$
        echo "source /etc/bash.bashrc.http_proxy" >> /tmp/tmp.profile.$$
-       mv -f /tmp/tmp.profile.$$ /home/vagrant/.profile
+       mv -f /tmp/tmp.profile.$$ /etc/profile
   EOH
 end
 
