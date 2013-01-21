@@ -34,6 +34,13 @@ bash "Set HTTP_PROXY " do
 end
 
 
+bash "Add LC_LANG" do
+    code <<-EOH
+       grep -v 'export LANG="en"' /home/vagrant/.profile > /tmp/tmp.profile.$$
+       echo 'export LANG="en"' >> /tmp/tmp.profile.$$
+       mv -f /tmp/tmp.profile.$$ /home/vagrant/.profile
+  EOH
+end
 bash "Add LC_MESSAGE" do
     code <<-EOH
        grep -v 'export LC_MESSAGES="C"' /home/vagrant/.profile > /tmp/tmp.profile.$$
