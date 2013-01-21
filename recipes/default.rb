@@ -33,6 +33,15 @@ bash "Set HTTP_PROXY " do
   EOH
 end
 
+
+bash "Add LC_MESSAGE" do
+    code <<-EOH
+       grep -v 'export LC_MESSAGE="C"' /home/vagrant/.profile > /tmp/tmp.profile.$$
+       echo 'export LC_MESSAGE="C"' >> /tmp/tmp.profile.$$
+       mv -f /tmp/tmp.profile.$$ /home/vagrant/.profile
+  EOH
+end
+
 #only do this once.
 bash "Set sudoers and bashrc" do
   code <<-EOH
