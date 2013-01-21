@@ -36,8 +36,16 @@ end
 
 bash "Add LC_MESSAGE" do
     code <<-EOH
-       grep -v 'export LC_MESSAGE="C"' /home/vagrant/.profile > /tmp/tmp.profile.$$
-       echo 'export LC_MESSAGE="C"' >> /tmp/tmp.profile.$$
+       grep -v 'export LC_MESSAGES="C"' /home/vagrant/.profile > /tmp/tmp.profile.$$
+       echo 'export LC_MESSAGES="C"' >> /tmp/tmp.profile.$$
+       mv -f /tmp/tmp.profile.$$ /home/vagrant/.profile
+  EOH
+end
+
+bash "Add http proxy to profile" do
+    code <<-EOH
+       grep -v "source /etc/bash.bashrc.http_proxy" /home/vagrant/.profile > /tmp/tmp.profile.$$
+       echo "source /etc/bash.bashrc.http_proxy" >> /tmp/tmp.profile.$$
        mv -f /tmp/tmp.profile.$$ /home/vagrant/.profile
   EOH
 end
