@@ -66,3 +66,20 @@ bash "Set sudoers and bashrc" do
   EOH
   creates "/etc/http_proxy_setup"
 end
+
+bash "Set sudoers and bashrc" do
+  if Chef::Config[:http_proxy]
+    http_raw = Chef::Config[:http_proxy]
+    http_raw.slice!("http://")
+    http_host = http_raw.split(":").first
+    http_port = http_raw.split(":").last
+    code <<-EOH
+cat  > /tmp/gitproxy <<_EOF
+#!/bin/sh
+exec /usr/bin/corkscrew #{http_host} #{http_port} \\$\*
+_EOF
+    chmod +x /tmp/gitproxy;
+EOH
+    creates "/tmp/gitproxy"
+  end
+end
