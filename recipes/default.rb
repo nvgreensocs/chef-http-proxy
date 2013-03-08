@@ -80,16 +80,17 @@ bash "Set sudoers and bashrc" do
 exec /usr/bin/corkscrew #{http_host} #{http_port} \\$\*
 _EOF
       chmod +x /usr/local/bin/gitproxy;
+
+      grep -v 'export http_proxy' /etc/profile > /tmp/tmp.profile.$$
+      echo 'export http_proxy=#{Chef::Config[:http_proxy]}' >> /tmp/tmp.profile.$$
+      mv -f /tmp/tmp.profile.$$ /etc/profile    
+
+      grep -v 'GIT_PROXY_COMMAND'
+      grep -v 'export GIT_PROXY_COMMAND' /etc/profile > /tmp/tmp.profile.$$
+      echo 'export GIT_PROXY_COMMAND=/usr/local/bin/gitproxy' >> /tmp/tmp.profile.$$
+      mv -f /tmp/tmp.profile.$$ /etc/profile    
+
     EOH
-
-    grep -v 'export http_proxy' /etc/profile > /tmp/tmp.profile.$$
-    echo 'export http_proxy=#{Chef::Config[:http_proxy]}' >> /tmp/tmp.profile.$$
-    mv -f /tmp/tmp.profile.$$ /etc/profile    
-
-    grep -v 'GIT_PROXY_COMMAND'
-    grep -v 'export GIT_PROXY_COMMAND' /etc/profile > /tmp/tmp.profile.$$
-    echo 'export GIT_PROXY_COMMAND=/usr/local/bin/gitproxy' >> /tmp/tmp.profile.$$
-    mv -f /tmp/tmp.profile.$$ /etc/profile    
 
     creates "/usr/local/bin/gitproxy"
   end
