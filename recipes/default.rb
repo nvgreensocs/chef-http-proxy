@@ -15,6 +15,15 @@
 
 ENV['http_proxy'] = Chef::Config[:http_proxy]
 
+
+bash "mkdir bash.profile.d" do
+  code <<-EOH
+    mkdir -p "#{node[:prefix]}/bash.profile.d"
+    echo 'for i in #{node[:prefix]}/bash.profile.d/*; do . $i; done' > /etc/profile.d/platform.bash.env.sh
+  EOH
+end
+
+
 ruby_block "HTTP Proxy Report" do
   block do
      if Chef::Config[:http_proxy]
@@ -28,39 +37,25 @@ end
 # We will always run these, just in case the user changes their proxy, it's not exactly long to do.
 bash "Set HTTP_PROXY " do
   code <<-EOH
-  echo 'export http_proxy="#{Chef::Config[:http_proxy]}"' > /etc/bash.bashrc.http_proxy
+  echo 'export http_proxy="#{Chef::Config[:http_proxy]}"' > "#{node[:prefix]}/bash.profile.d/http_proxy.profile"
+  echo 'export http_proxy="#{Chef::Config[:http_proxy]}"' > /etc/profile.d/http_proxy.sh
   echo 'Acquire::http::Proxy "#{Chef::Config[:http_proxy]}";' > /etc/apt/apt.conf.d/30proxy
   EOH
 end
 
 
+# these are only helpful for the VM setup, dont put them in the platform bash profile....
 bash "Add LC_LANG" do
     code <<-EOH
-       grep -v 'export LANG="en"' /etc/profile > /tmp/tmp.profile.$$
-       echo 'export LANG="en"' >> /tmp/tmp.profile.$$
-       mv -f /tmp/tmp.profile.$$ /etc/profile
-  EOH
-end
-bash "Add LC_MESSAGE" do
-    code <<-EOH
-       grep -v 'export LC_MESSAGES="C"' /etc/profile > /tmp/tmp.profile.$$
-       echo 'export LC_MESSAGES="C"' >> /tmp/tmp.profile.$$
-       mv -f /tmp/tmp.profile.$$ /etc/profile
+       echo 'export LANG="en"' > /etc/profile.d/lc_lang.sh
+       echo 'export LC_MESSAGES="C"' >> /etc/profile.d/lc_lang.sh
   EOH
 end
 
-bash "Add http proxy to profile" do
-    code <<-EOH
-       grep -v "source /etc/bash.bashrc.http_proxy" /etc/profile > /tmp/tmp.profile.$$
-       echo "source /etc/bash.bashrc.http_proxy" >> /tmp/tmp.profile.$$
-       mv -f /tmp/tmp.profile.$$ /etc/profile
-  EOH
-end
 
-#only do this once.
+# only do this once.
 bash "Set sudoers and bashrc" do
   code <<-EOH
-    echo "source /etc/bash.bashrc.http_proxy" >> /etc/bash.bashrc
     echo 'Defaults env_keep = "http_proxy https_proxy ftp_proxy"' >> /etc/sudoers
     touch /etc/http_proxy_setup
   EOH
@@ -81,17 +76,9 @@ exec /usr/bin/corkscrew #{http_host} #{http_port} \\$\*
 _EOF
       chmod +x /usr/local/bin/gitproxy;
 
-      grep -v 'export http_proxy' /etc/profile > /tmp/tmp.profile.$$
-      echo 'export http_proxy=#{Chef::Config[:http_proxy]}' >> /tmp/tmp.profile.$$
-      mv -f /tmp/tmp.profile.$$ /etc/profile    
-
-      grep -v 'GIT_PROXY_COMMAND'
-      grep -v 'export GIT_PROXY_COMMAND' /etc/profile > /tmp/tmp.profile.$$
-      echo 'export GIT_PROXY_COMMAND=/usr/local/bin/gitproxy' >> /tmp/tmp.profile.$$
-      mv -f /tmp/tmp.profile.$$ /etc/profile    
+      echo 'export GIT_PROXY_COMMAND=/usr/local/bin/gitproxy' > /etc/profile.d/git_proxy.sh
 
     EOH
-
     creates "/usr/local/bin/gitproxy"
   end
 end
