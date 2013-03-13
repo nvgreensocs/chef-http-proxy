@@ -77,6 +77,7 @@ _EOF
       chmod +x /usr/local/bin/gitproxy;
 
       echo 'export GIT_PROXY_COMMAND=/usr/local/bin/gitproxy' > /etc/profile.d/git_proxy.sh
+      echo 'export GIT_PROXY_COMMAND=/usr/local/bin/gitproxy' > "#{node[:prefix]}/bash.profile.d/git_proxy.profile"
 
     EOH
     creates "/usr/local/bin/gitproxy"
