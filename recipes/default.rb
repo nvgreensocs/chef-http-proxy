@@ -19,6 +19,7 @@ ENV['http_proxy'] = Chef::Config[:http_proxy]
 bash "mkdir bash.profile.d" do
   code <<-EOH
     mkdir -p "#{node[:prefix]}/bash.profile.d"
+    touch "#{node[:prefix]}/bash.profile.d/empty"
     echo 'for i in #{node[:prefix]}/bash.profile.d/*; do . $i; done' > /etc/profile.d/platform.bash.env.sh
   EOH
 end
